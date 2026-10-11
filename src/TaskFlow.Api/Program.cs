@@ -1,5 +1,7 @@
 using TaskFlow.Application;
 using TaskFlow.Application.Commands;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +16,19 @@ builder.Services.AddMediatR(options =>
 
 builder.Services.AddApplicationDepencency();
 
-//builder.Services.AddDbContext<AppDbContext>(options => { });
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = "http://localhost:5014",
+        ValidAudiences = [""],
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("secret key"))
+    };
+});
 
 var app = builder.Build();
 
