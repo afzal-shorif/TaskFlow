@@ -3,16 +3,21 @@ using MediatR;
 using TaskFlow.Model;
 using TaskFlow.Application.Commands;
 using TaskFlow.Application.Queries;
+using TaskFlow.Application.Service;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class TasksController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly ICurrentUserService _currentUserService;
 
-    public TasksController(IMediator mediator)
+    public TasksController(IMediator mediator, CurrentUserService currentUserService)
     {
         _mediator = mediator;
+        _currentUserService = currentUserService;
     }
 
     [HttpGet]
